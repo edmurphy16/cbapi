@@ -57,7 +57,7 @@
 #
 
 
-import datetime
+import datetime,pprint
 from cbapi.util.cli_helpers import main_helper
 
 
@@ -71,7 +71,7 @@ def main(cb,args):
         try:
             start = datetime.datetime.strptime(proc['start'],"%Y-%m-%dT%H:%M:%S.%fZ")
             end = datetime.datetime.strptime(proc['last_update'], "%Y-%m-%dT%H:%M:%S.%fZ")
-            runtime = int((end-start).seconds)
+            runtime = int((end-start).total_seconds())
         except:
             # there were some unknown processes with no known start time or 
             # no known last update
@@ -82,8 +82,8 @@ def main(cb,args):
         
         rate = proc['netconn_count']/float(runtime)
         if rate > int(args['conn_rate']):
-            print "%s|%s|%s|%.4f"%(proc['hostname'],
-                                    proc['username'],
+            url = '%s/#analyze/%s/%s'%(args['server_url'],proc['id'],proc['segment_id'])
+            print "%s|%s|%.4f"%(url,
                                     proc['process_name'],rate)
 
 
